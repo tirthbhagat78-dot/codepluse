@@ -288,6 +288,7 @@
             cursor: pointer;
             display: grid;
             place-items: center;
+            text-decoration: none;
         }
 
         .tone-teal .lesson-icon { color: #0f6b6b; border-color: #cfe5e3; }
@@ -440,7 +441,7 @@
             <section class="panel">
                 <div class="lessons-head">
                     <h2>Your Lessons</h2>
-                    <a href="#">See the map</a>
+                    <a href="{% url 'lessons' %}">See the map</a>
                 </div>
 
                 <div class="lesson-list">
@@ -450,11 +451,11 @@
                         <div>
                             <p class="lesson-title">{{ lesson.title }}</p>
                             <p class="meta">{{ lesson.done }} of {{ lesson.total }} lessons done</p>
-                            <div class="bar"><i></i></div>
+                            <div class="bar"><i style="width: {{ lesson.progress }}%;"></i></div>
                         </div>
                         <div>
-                            <div class="badge">0%</div>
-                            <button class="go">&gt;</button>
+                            <div class="badge">{{ lesson.progress }}%</div>
+                            <a class="go" href="{% url 'lesson_detail' lesson.slug %}">&gt;</a>
                         </div>
                     </article>
                     {% endfor %}

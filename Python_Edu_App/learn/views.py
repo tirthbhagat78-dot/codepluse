@@ -1,3 +1,4 @@
+from django.http import Http404
 from django.shortcuts import render
 
 
@@ -45,17 +46,166 @@ FEATURE_PAGES = {
 }
 
 
+LESSONS = [
+    {
+        "slug": "python-introduction",
+        "title": "Python Introduction",
+        "tone": "teal",
+        "done": 2,
+        "total": 10,
+        "summary": "Understand what Python is and write your first commands.",
+        "duration": "12 min",
+        "sections": [
+            {
+                "heading": "What Python is",
+                "points": [
+                    "Python is a readable, beginner-friendly programming language.",
+                    "It is used for web apps, data analysis, automation, and AI.",
+                ],
+            },
+            {
+                "heading": "First program",
+                "points": [
+                    "Use print() to show output.",
+                    "Run your script and check the output in terminal.",
+                ],
+            },
+        ],
+        "exercise": {
+            "task": "Print your name and favorite subject in two lines.",
+            "starter": "print('Your name')\nprint('Favorite subject')",
+        },
+    },
+    {
+        "slug": "variables-and-data-types",
+        "title": "Variables and Data Types",
+        "tone": "indigo",
+        "done": 3,
+        "total": 10,
+        "summary": "Store values in variables and understand core Python types.",
+        "duration": "15 min",
+        "sections": [
+            {
+                "heading": "Variables",
+                "points": [
+                    "Variables are names that hold values.",
+                    "Example: age = 20 stores an integer.",
+                ],
+            },
+            {
+                "heading": "Data types",
+                "points": [
+                    "Common types: int, float, str, bool.",
+                    "Use type(value) to inspect type.",
+                ],
+            },
+        ],
+        "exercise": {
+            "task": "Create variables for your name, age, and whether you are a student.",
+            "starter": "name = 'Ava'\nage = 20\nis_student = True",
+        },
+    },
+    {
+        "slug": "control-flow",
+        "title": "Control Flow",
+        "tone": "pink",
+        "done": 1,
+        "total": 10,
+        "summary": "Use if/elif/else to control decisions in your program.",
+        "duration": "14 min",
+        "sections": [
+            {
+                "heading": "Conditional logic",
+                "points": [
+                    "if runs when condition is true.",
+                    "elif checks another condition.",
+                    "else handles all remaining cases.",
+                ],
+            }
+        ],
+        "exercise": {
+            "task": "Write a program that prints 'Pass' if marks >= 40, otherwise 'Fail'.",
+            "starter": "marks = 56\nif marks >= 40:\n    print('Pass')\nelse:\n    print('Fail')",
+        },
+    },
+    {
+        "slug": "functions",
+        "title": "Functions",
+        "tone": "green",
+        "done": 4,
+        "total": 10,
+        "summary": "Group reusable logic with functions and parameters.",
+        "duration": "16 min",
+        "sections": [
+            {
+                "heading": "Defining functions",
+                "points": [
+                    "Use def to create a function.",
+                    "Parameters pass input values.",
+                    "return sends a result back.",
+                ],
+            }
+        ],
+        "exercise": {
+            "task": "Create a function add(a, b) that returns the sum.",
+            "starter": "def add(a, b):\n    return a + b",
+        },
+    },
+    {
+        "slug": "strings",
+        "title": "Strings",
+        "tone": "rose",
+        "done": 2,
+        "total": 10,
+        "summary": "Work with text using indexing, slicing, and methods.",
+        "duration": "13 min",
+        "sections": [
+            {
+                "heading": "String basics",
+                "points": [
+                    "Strings are text values in quotes.",
+                    "Use len(text) for length and text.upper() for uppercase.",
+                ],
+            }
+        ],
+        "exercise": {
+            "task": "Take a name and print it in uppercase.",
+            "starter": "name = 'code pulse'\nprint(name.upper())",
+        },
+    },
+    {
+        "slug": "lists",
+        "title": "Lists",
+        "tone": "purple",
+        "done": 1,
+        "total": 10,
+        "summary": "Store multiple values in order and update them easily.",
+        "duration": "15 min",
+        "sections": [
+            {
+                "heading": "List operations",
+                "points": [
+                    "Create with square brackets: [1, 2, 3].",
+                    "Use append() to add and remove() to delete values.",
+                ],
+            }
+        ],
+        "exercise": {
+            "task": "Create a list of 3 subjects and append one more.",
+            "starter": "subjects = ['Math', 'Physics', 'Chemistry']\nsubjects.append('Python')",
+        },
+    },
+]
+
+
+def _lesson_with_progress(lesson):
+    lesson_data = dict(lesson)
+    lesson_data["progress"] = int((lesson_data["done"] / lesson_data["total"]) * 100)
+    return lesson_data
+
+
 def home(request):
-    lessons = [
-        {"title": "Python Introduction", "done": 0, "total": 10, "tone": "teal"},
-        {"title": "Variables and Data Types", "done": 0, "total": 10, "tone": "indigo"},
-        {"title": "Control Flow", "done": 0, "total": 10, "tone": "pink"},
-        {"title": "Functions", "done": 0, "total": 10, "tone": "green"},
-        {"title": "Strings", "done": 0, "total": 10, "tone": "rose"},
-        {"title": "Lists", "done": 0, "total": 10, "tone": "purple"},
-        {"title": "Tuples", "done": 0, "total": 10, "tone": "indigo"},
-        {"title": "Dictionaries", "done": 0, "total": 10, "tone": "purple"},
-    ]
+    lessons = [_lesson_with_progress(lesson) for lesson in LESSONS]
 
     quick_access = [
         {"name": "AI Tutor", "icon": "spark"},
@@ -90,5 +240,34 @@ def feature_page(request, page_key):
             "title": page["title"],
             "subtitle": page["subtitle"],
             "cards": page["cards"],
+        },
+    )
+
+
+def lessons(request):
+    lesson_items = [_lesson_with_progress(lesson) for lesson in LESSONS]
+    return render(
+        request,
+        "learn/lessons.html",
+        {
+            "app_name": "Code Pulse",
+            "title": "Lesson Map",
+            "subtitle": "Pick a lesson and continue where you left off.",
+            "lessons": lesson_items,
+        },
+    )
+
+
+def lesson_detail(request, slug):
+    lesson = next((item for item in LESSONS if item["slug"] == slug), None)
+    if lesson is None:
+        raise Http404("Lesson not found")
+
+    return render(
+        request,
+        "learn/lesson_detail.html",
+        {
+            "app_name": "Code Pulse",
+            "lesson": _lesson_with_progress(lesson),
         },
     )
