@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ app_name }} - {{ title }}</title>
+    <style>
+        @import url("https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Work+Sans:wght@400;500;600;700&display=swap");
+
+        :root {
+            --bg: #f6f1e9;
+            --card: #fffaf2;
+            --text: #1f1c16;
+            --muted: #6c635b;
+            --accent: #0d6b6b;
+            --accent-2: #d16a2f;
+            --line: #eadfce;
+            --shadow: 0 18px 38px rgba(35, 28, 20, 0.12);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: "Work Sans", sans-serif;
+        }
+
+        body {
+            background:
+                radial-gradient(circle at 15% 15%, #ffe9d4 0%, transparent 50%),
+                radial-gradient(circle at 85% 10%, #dff3f0 0%, transparent 45%),
+                linear-gradient(180deg, #fef6eb 0%, var(--bg) 55%);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        .site {
+            width: min(1240px, 100%);
+            margin: 0 auto;
+            padding: 22px;
+        }
+
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .brand {
+            font-size: 1.45rem;
+            font-weight: 700;
+            color: #1d1b16;
+            font-family: "Fraunces", serif;
+            letter-spacing: 0.3px;
+        }
+
+        .brand i {
+            color: var(--accent-2);
+            font-style: normal;
+        }
+
+        .nav {
+            display: flex;
+            gap: 10px;
+        }
+
+        .nav a {
+            color: #5a5147;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 10px 14px;
+            border-radius: 12px;
+            background: transparent;
+        }
+
+        .nav a.active {
+            color: #fff;
+            background: linear-gradient(120deg, var(--accent), var(--accent-2));
+        }
+
+        .hero {
+            border-radius: 26px;
+            padding: 28px;
+            background: linear-gradient(130deg, rgba(13, 107, 107, 0.96), rgba(209, 106, 47, 0.96));
+            color: #fff;
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
+        }
+
+        .hero h1 {
+            font-size: clamp(1.6rem, 3.2vw, 2.1rem);
+            margin: 6px 0 8px;
+            line-height: 1.2;
+            font-family: "Fraunces", serif;
+        }
+
+        .hero p {
+            opacity: 0.92;
+            max-width: 740px;
+        }
+
+        .grid {
+            display: grid;
+            gap: 12px;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .card {
+            background: var(--card);
+            border-radius: 18px;
+            border: 1px solid var(--line);
+            box-shadow: var(--shadow);
+            padding: 16px;
+        }
+
+        .card h3 {
+            font-size: 1.1rem;
+            margin-bottom: 6px;
+        }
+
+        .card p {
+            color: var(--muted);
+            line-height: 1.5;
+        }
+
+        @media (max-width: 780px) {
+            .site {
+                padding: 14px;
+            }
+
+            .topbar {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .nav {
+                width: 100%;
+                overflow-x: auto;
+                padding-bottom: 4px;
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .site {
+                padding: 10px;
+            }
+
+            .hero {
+                padding: 20px;
+            }
+
+            .nav a {
+                white-space: nowrap;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="site">
+        <header class="topbar">
+            <div class="brand">Code <i>Pulse</i></div>
+            <nav class="nav">
+                <a href="{% url 'home' %}" class="{% if request.resolver_match.url_name == 'home' %}active{% endif %}">Learn</a>
+                <a href="{% url 'explore' %}" class="{% if request.resolver_match.url_name == 'explore' %}active{% endif %}">Explore</a>
+                <a href="{% url 'ai_tutor' %}" class="{% if request.resolver_match.url_name == 'ai_tutor' %}active{% endif %}">AI Tutor</a>
+                <a href="{% url 'progress' %}" class="{% if request.resolver_match.url_name == 'progress' %}active{% endif %}">Progress</a>
+                <a href="{% url 'more' %}" class="{% if request.resolver_match.url_name == 'more' %}active{% endif %}">More</a>
+            </nav>
+        </header>
+
+        <section class="hero">
+            <p>{{ app_name }}</p>
+            <h1>{{ title }}</h1>
+            <p>{{ subtitle }}</p>
+        </section>
+
+        <main class="grid">
+            {% for card in cards %}
+            <article class="card">
+                <h3>{{ card.name }}</h3>
+                <p>{{ card.detail }}</p>
+            </article>
+            {% endfor %}
+        </main>
+    </div>
+</body>
+</html>
