@@ -54,6 +54,7 @@
             color: #1d1b16;
             font-family: "Fraunces", serif;
             letter-spacing: 0.3px;
+            text-decoration: none;
         }
 
         .brand i {
@@ -150,6 +151,8 @@
             gap: 10px;
             align-items: center;
             background: #fff;
+            text-decoration: none;
+            color: inherit;
         }
 
         .icon {
@@ -391,9 +394,9 @@
 <body>
     <div class="site">
         <header class="topbar">
-            <div class="brand">Code <i>Pulse</i></div>
+            <a class="brand" href="{% url 'dashboard' %}">Code <i>Pulse</i></a>
             <nav class="nav">
-                <a href="{% url 'home' %}" class="{% if request.resolver_match.url_name == 'home' %}active{% endif %}">Learn</a>
+                <a href="{% url 'home' %}" class="{% if request.resolver_match.url_name == 'home' or request.resolver_match.url_name == 'dashboard' %}active{% endif %}">Learn</a>
                 <a href="{% url 'explore' %}" class="{% if request.resolver_match.url_name == 'explore' %}active{% endif %}">Explore</a>
                 <a href="{% url 'ai_tutor' %}" class="{% if request.resolver_match.url_name == 'ai_tutor' %}active{% endif %}">AI Tutor</a>
                 <a href="{% url 'progress' %}" class="{% if request.resolver_match.url_name == 'progress' %}active{% endif %}">Progress</a>
@@ -413,12 +416,12 @@
                 <h2>Quick Access</h2>
                 <div class="quick-grid">
                     {% for item in quick_access %}
-                    <div class="quick-item">
+                    <a class="quick-item" href="{% url item.url_name %}">
                         <div class="icon">
                             {% if item.icon == "spark" %}AI{% elif item.icon == "note" %}NT{% elif item.icon == "book" %}BK{% elif item.icon == "help" %}HP{% elif item.icon == "bookmark" %}BM{% else %}SG{% endif %}
                         </div>
                         <span>{{ item.name }}</span>
-                    </div>
+                    </a>
                     {% endfor %}
                 </div>
 

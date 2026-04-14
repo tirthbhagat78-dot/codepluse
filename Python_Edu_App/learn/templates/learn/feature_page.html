@@ -53,6 +53,7 @@
             color: #1d1b16;
             font-family: "Fraunces", serif;
             letter-spacing: 0.3px;
+            text-decoration: none;
         }
 
         .brand i {
@@ -164,9 +165,9 @@
 <body>
     <div class="site">
         <header class="topbar">
-            <div class="brand">Code <i>Pulse</i></div>
+            <a class="brand" href="{% url 'dashboard' %}">Code <i>Pulse</i></a>
             <nav class="nav">
-                <a href="{% url 'home' %}" class="{% if request.resolver_match.url_name == 'home' %}active{% endif %}">Learn</a>
+                <a href="{% url 'home' %}" class="{% if request.resolver_match.url_name == 'home' or request.resolver_match.url_name == 'dashboard' %}active{% endif %}">Learn</a>
                 <a href="{% url 'explore' %}" class="{% if request.resolver_match.url_name == 'explore' %}active{% endif %}">Explore</a>
                 <a href="{% url 'ai_tutor' %}" class="{% if request.resolver_match.url_name == 'ai_tutor' %}active{% endif %}">AI Tutor</a>
                 <a href="{% url 'progress' %}" class="{% if request.resolver_match.url_name == 'progress' %}active{% endif %}">Progress</a>
@@ -191,3 +192,4 @@
     </div>
 </body>
 </html>
+

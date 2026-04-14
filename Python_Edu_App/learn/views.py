@@ -43,6 +43,56 @@ FEATURE_PAGES = {
             {"name": "Community Help", "detail": "Find answers and peer support."},
         ],
     },
+    "my-notes": {
+        "title": "My Notes",
+        "subtitle": "Store your personal notes for each lesson and topic.",
+        "cards": [
+            {"name": "Lesson Notes", "detail": "Capture key ideas from every lesson."},
+            {"name": "Code Snippets", "detail": "Save reusable code blocks."},
+            {"name": "Revision List", "detail": "Flag topics for quick review."},
+            {"name": "Pinned Notes", "detail": "Keep your most important notes on top."},
+        ],
+    },
+    "cheat-sheets": {
+        "title": "Cheat Sheets",
+        "subtitle": "Fast-reference cards for Python syntax and core patterns.",
+        "cards": [
+            {"name": "Syntax Basics", "detail": "Variables, loops, conditions, and functions."},
+            {"name": "Data Types", "detail": "Strings, lists, dictionaries, tuples, and sets."},
+            {"name": "Methods", "detail": "Most-used string and list methods."},
+            {"name": "Error Fixes", "detail": "Common Python errors and quick fixes."},
+        ],
+    },
+    "help-center": {
+        "title": "Help Center",
+        "subtitle": "Find support topics and troubleshooting guidance.",
+        "cards": [
+            {"name": "Getting Started", "detail": "Setup help and first steps."},
+            {"name": "Account Help", "detail": "Profile, settings, and access support."},
+            {"name": "Lesson Issues", "detail": "Fix progress or page issues quickly."},
+            {"name": "Contact Support", "detail": "Reach out when you need help."},
+        ],
+    },
+    "bookmarks": {
+        "title": "Bookmarks",
+        "subtitle": "Access your saved lessons and reference pages.",
+        "cards": [
+            {"name": "Saved Lessons", "detail": "Open lessons you marked for later."},
+            {"name": "Saved Examples", "detail": "Keep useful examples in one place."},
+            {"name": "Quick Revisit", "detail": "Jump directly to your focus topics."},
+            {"name": "Organize", "detail": "Group bookmarks by topic."},
+        ],
+    },
+    "study-goals": {
+        "title": "Study Goals",
+        "subtitle": "Set daily and weekly goals to stay consistent.",
+        "cards": [
+            {"name": "Daily Target", "detail": "Choose how many lessons per day."},
+            {"name": "Weekly Goal", "detail": "Track your weekly completion target."},
+            {"name": "Consistency Meter", "detail": "See streak and habit progress."},
+            {"name": "Goal History", "detail": "Review previous goal performance."},
+        ],
+    },
 }
 
 
@@ -284,12 +334,12 @@ def home(request):
     metrics = _course_metrics(lessons)
 
     quick_access = [
-        {"name": "AI Tutor", "icon": "spark"},
-        {"name": "My Notes", "icon": "note"},
-        {"name": "Cheat Sheets", "icon": "book"},
-        {"name": "Help Center", "icon": "help"},
-        {"name": "Bookmarks", "icon": "bookmark"},
-        {"name": "Study Goals", "icon": "goal"},
+        {"name": "AI Tutor", "icon": "spark", "url_name": "ai_tutor"},
+        {"name": "My Notes", "icon": "note", "url_name": "my_notes"},
+        {"name": "Cheat Sheets", "icon": "book", "url_name": "cheat_sheets"},
+        {"name": "Help Center", "icon": "help", "url_name": "help_center"},
+        {"name": "Bookmarks", "icon": "bookmark", "url_name": "bookmarks"},
+        {"name": "Study Goals", "icon": "goal", "url_name": "study_goals"},
     ]
 
     return render(
