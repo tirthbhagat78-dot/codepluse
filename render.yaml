@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: python-edu-app
+    env: python
+    plan: free
+    branch: main
+    root: Python_Edu_App
+    buildCommand: pip install -r requirements.txt && python manage.py collectstatic --noinput
+    startCommand: gunicorn codepulse.wsgi --bind 0.0.0.0:$PORT

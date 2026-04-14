@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ app_name }}</title>
+    <style>
+        @import url("https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Work+Sans:wght@400;500;600;700&display=swap");
+
+        :root {
+            --bg: #f6f1e9;
+            --card: #fffaf2;
+            --text: #1f1c16;
+            --muted: #6c635b;
+            --accent: #0d6b6b;
+            --accent-2: #d16a2f;
+            --line: #eadfce;
+            --shadow: 0 18px 38px rgba(35, 28, 20, 0.12);
+            --glass: rgba(255, 255, 255, 0.65);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: "Work Sans", sans-serif;
+        }
+
+        body {
+            background:
+                radial-gradient(circle at 15% 15%, #ffe9d4 0%, transparent 50%),
+                radial-gradient(circle at 85% 10%, #dff3f0 0%, transparent 45%),
+                linear-gradient(180deg, #fef6eb 0%, var(--bg) 55%);
+            color: var(--text);
+        }
+
+        .site {
+            width: min(1240px, 100%);
+            margin: 0 auto;
+            padding: 22px;
+        }
+
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .brand {
+            font-size: 1.45rem;
+            font-weight: 700;
+            color: #1d1b16;
+            font-family: "Fraunces", serif;
+            letter-spacing: 0.3px;
+        }
+
+        .brand i {
+            color: var(--accent-2);
+            font-style: normal;
+        }
+
+        .nav {
+            display: flex;
+            gap: 10px;
+        }
+
+        .nav a {
+            color: #5a5147;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 10px 14px;
+            border-radius: 12px;
+            background: transparent;
+        }
+
+        .nav a.active {
+            color: #fff;
+            background: linear-gradient(120deg, var(--accent), var(--accent-2));
+        }
+
+        .hero {
+            border-radius: 26px;
+            padding: 28px;
+            background:
+                linear-gradient(130deg, rgba(13, 107, 107, 0.96), rgba(209, 106, 47, 0.96)),
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cg fill='none' stroke='rgba(255,255,255,0.18)' stroke-width='1'%3E%3Cpath d='M0 60h120'/%3E%3Cpath d='M60 0v120'/%3E%3Cpath d='M0 0l120 120'/%3E%3Cpath d='M120 0L0 120'/%3E%3C/g%3E%3C/svg%3E");
+            color: #fff;
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+            animation: floatIn 700ms ease-out;
+        }
+
+        .hero h1 {
+            font-size: 2.1rem;
+            margin: 8px 0 10px;
+            line-height: 1.2;
+            font-family: "Fraunces", serif;
+        }
+
+        .hero p {
+            opacity: 0.92;
+            max-width: 700px;
+        }
+
+        .hero .pill {
+            margin-top: 14px;
+            display: inline-block;
+            border: 1px solid rgba(255, 255, 255, 0.45);
+            border-radius: 999px;
+            padding: 8px 16px;
+            font-weight: 600;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(6px);
+        }
+
+        .content {
+            display: grid;
+            grid-template-columns: 330px 1fr;
+            gap: 20px;
+        }
+
+        .panel {
+            background: var(--card);
+            border-radius: 22px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--line);
+            padding: 16px;
+        }
+
+        .panel h2 {
+            font-size: 1.4rem;
+            margin-bottom: 14px;
+        }
+
+        .quick-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+        }
+
+        .quick-item {
+            border: 1px solid #efe3d1;
+            border-radius: 14px;
+            padding: 12px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            background: #fff;
+        }
+
+        .icon {
+            width: 34px;
+            height: 34px;
+            border-radius: 10px;
+            background: #e7f2f1;
+            color: #0f6c6c;
+            display: grid;
+            place-items: center;
+            font-size: 0.95rem;
+            font-weight: 700;
+        }
+
+        .quick-item span {
+            font-weight: 600;
+            font-size: 0.98rem;
+        }
+
+        .stat-cards {
+            margin-top: 14px;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+        }
+
+        .stat {
+            border-radius: 14px;
+            background: #fff6ea;
+            border: 1px solid #efe0cb;
+            padding: 12px;
+        }
+
+        .stat b {
+            font-size: 1.4rem;
+        }
+
+        .stat p {
+            color: var(--muted);
+            margin-top: 2px;
+        }
+
+        .lessons-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .lessons-head h2 {
+            font-size: 1.6rem;
+        }
+
+        .lessons-head a {
+            text-decoration: none;
+            font-weight: 600;
+            color: #0d6b6b;
+        }
+
+        .lesson-list {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .lesson-card {
+            background: var(--card);
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            border: 1px solid #efe3d1;
+            padding: 14px;
+            display: grid;
+            grid-template-columns: 58px 1fr 58px;
+            align-items: center;
+            gap: 10px;
+            animation: riseIn 700ms ease-out;
+        }
+
+        .lesson-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 14px;
+            border: 2px solid #cfe5e3;
+            color: #0b6c6c;
+            display: grid;
+            place-items: center;
+            font-weight: 700;
+            font-size: 0.95rem;
+        }
+
+        .lesson-title {
+            font-size: 1.05rem;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .meta {
+            color: var(--muted);
+            font-size: 0.9rem;
+            margin-bottom: 7px;
+        }
+
+        .bar {
+            height: 8px;
+            border-radius: 999px;
+            background: var(--line);
+            overflow: hidden;
+        }
+
+        .bar i {
+            display: block;
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), var(--accent-2));
+        }
+
+        .badge {
+            text-align: center;
+            background: #e7f2f1;
+            color: #0b6c6c;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            padding: 5px 0;
+            margin-bottom: 6px;
+        }
+
+        .go {
+            width: 42px;
+            height: 42px;
+            border: none;
+            background: #f7eadd;
+            color: #b0521d;
+            border-radius: 12px;
+            font-size: 1.3rem;
+            cursor: pointer;
+        }
+
+        .tone-teal .lesson-icon { color: #0f6b6b; border-color: #cfe5e3; }
+        .tone-indigo .lesson-icon { color: #3e5f72; border-color: #d9e5ee; }
+        .tone-pink .lesson-icon { color: #b05563; border-color: #f0d6db; }
+        .tone-green .lesson-icon { color: #2e7b57; border-color: #d7eadf; }
+        .tone-rose .lesson-icon { color: #a24e2b; border-color: #f2dbc9; }
+        .tone-purple .lesson-icon { color: #6e5a82; border-color: #e1d8ea; }
+
+        @keyframes floatIn {
+            from { transform: translateY(12px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes riseIn {
+            from { transform: translateY(10px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @media (max-width: 1050px) {
+            .content {
+                grid-template-columns: 1fr;
+            }
+
+            .quick-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 780px) {
+            .site {
+                padding: 14px;
+            }
+
+            .topbar {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .nav {
+                width: 100%;
+                overflow-x: auto;
+                padding-bottom: 4px;
+            }
+
+            .hero h1 {
+                font-size: 1.7rem;
+            }
+
+            .lesson-list {
+                grid-template-columns: 1fr;
+            }
+
+            .quick-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="site">
+        <header class="topbar">
+            <div class="brand">Code <i>Pulse</i></div>
+            <nav class="nav">
+                <a href="#" class="active">Learn</a>
+                <a href="#">Explore</a>
+                <a href="#">AI Tutor</a>
+                <a href="#">Progress</a>
+                <a href="#">More</a>
+            </nav>
+        </header>
+
+        <section class="hero">
+            <p>Welcome back</p>
+            <h1>Learn Python with Code Pulse</h1>
+            <p>Small, steady steps beat big, flashy plans. Pick a lesson and keep the streak alive.</p>
+            <span class="pill">Today: 10 minutes</span>
+        </section>
+
+        <main class="content">
+            <aside class="panel">
+                <h2>Quick Access</h2>
+                <div class="quick-grid">
+                    {% for item in quick_access %}
+                    <div class="quick-item">
+                        <div class="icon">
+                            {% if item.icon == "spark" %}AI{% elif item.icon == "note" %}NT{% elif item.icon == "book" %}BK{% elif item.icon == "help" %}HP{% elif item.icon == "bookmark" %}BM{% else %}SG{% endif %}
+                        </div>
+                        <span>{{ item.name }}</span>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <div class="stat-cards">
+                    <div class="stat">
+                        <b>0 days</b>
+                        <p>Streak so far</p>
+                    </div>
+                    <div class="stat">
+                        <b>0 / 3</b>
+                        <p>Lessons today</p>
+                    </div>
+                    <div class="stat">
+                        <b>0%</b>
+                        <p>Course progress</p>
+                    </div>
+                </div>
+            </aside>
+
+            <section class="panel">
+                <div class="lessons-head">
+                    <h2>Your Lessons</h2>
+                    <a href="#">See the map</a>
+                </div>
+
+                <div class="lesson-list">
+                    {% for lesson in lessons %}
+                    <article class="lesson-card tone-{{ lesson.tone }}">
+                        <div class="lesson-icon">L</div>
+                        <div>
+                            <p class="lesson-title">{{ lesson.title }}</p>
+                            <p class="meta">{{ lesson.done }} of {{ lesson.total }} lessons done</p>
+                            <div class="bar"><i></i></div>
+                        </div>
+                        <div>
+                            <div class="badge">0%</div>
+                            <button class="go">&gt;</button>
+                        </div>
+                    </article>
+                    {% endfor %}
+                </div>
+            </section>
+        </main>
+    </div>
+</body>
+</html>
