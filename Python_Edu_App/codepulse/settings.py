@@ -35,7 +35,7 @@ ALLOWED_HOSTS = _csv_env("DJANGO_ALLOWED_HOSTS")
 render_host = os.environ.get("RENDER_EXTERNAL_HOSTNAME")
 if render_host:
     ALLOWED_HOSTS.append(render_host)
-ALLOWED_HOSTS.extend(["127.0.0.1", "localhost"])
+ALLOWED_HOSTS.extend(["127.0.0.1", "localhost", "testserver"])
 
 
 # Application definition

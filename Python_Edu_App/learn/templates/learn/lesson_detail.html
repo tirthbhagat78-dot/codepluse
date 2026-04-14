@@ -16,6 +16,10 @@
             --accent-2: #d16a2f;
             --line: #eadfce;
             --shadow: 0 18px 38px rgba(35, 28, 20, 0.12);
+            --ok: #2f7a57;
+            --bad: #8b3b2d;
+            --ok-bg: #e4f4eb;
+            --bad-bg: #fde8e3;
         }
 
         * {
@@ -146,6 +150,30 @@
             font-size: 0.9rem;
         }
 
+        .quiz-option {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+            color: var(--muted);
+        }
+
+        .feedback {
+            margin-top: 10px;
+            border-radius: 12px;
+            padding: 10px 12px;
+            font-weight: 600;
+        }
+
+        .feedback.success {
+            background: var(--ok-bg);
+            color: var(--ok);
+        }
+
+        .feedback.error {
+            background: var(--bad-bg);
+            color: var(--bad);
+        }
+
         .actions {
             display: flex;
             gap: 10px;
@@ -159,12 +187,19 @@
             font-weight: 600;
             padding: 10px 14px;
             border-radius: 12px;
+            border: none;
+            cursor: pointer;
             background: linear-gradient(120deg, var(--accent), var(--accent-2));
         }
 
         .btn.alt {
             background: #efe2d0;
             color: #70472b;
+        }
+
+        .status {
+            color: var(--muted);
+            margin-top: 8px;
         }
 
         @media (max-width: 780px) {
@@ -202,7 +237,7 @@
             <p>Lesson</p>
             <h1>{{ lesson.title }}</h1>
             <p>{{ lesson.summary }}</p>
-            <span class="pill">{{ lesson.progress }}% complete • {{ lesson.duration }}</span>
+            <span class="pill">{{ lesson.progress }}% complete - {{ lesson.duration }}</span>
         </section>
 
         <main class="content">
@@ -222,6 +257,44 @@
                 <h3>{{ lesson.exercise.task }}</h3>
                 <pre><code>{{ lesson.exercise.starter }}</code></pre>
             </article>
+
+            <article class="card">
+                <h2>Quick Quiz</h2>
+                <h3>{{ lesson.quiz.question }}</h3>
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="quiz">
+                    {% for option in lesson.quiz.options %}
+                    <label class="quiz-option">
+                        <input type="radio" name="choice" value="{{ forloop.counter0 }}">
+                        <span>{{ option }}</span>
+                    </label>
+                    {% endfor %}
+                    <button class="btn" type="submit">Submit quiz</button>
+                </form>
+                {% if lesson.quiz_done %}
+                <p class="status">Latest quiz result: {% if lesson.quiz_correct %}Passed{% else %}Needs retry{% endif %}</p>
+                {% endif %}
+                {% if feedback and feedback.explanation %}
+                <p class="status">{{ feedback.explanation }}</p>
+                {% endif %}
+            </article>
+
+            <article class="card">
+                <h2>Completion</h2>
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="complete">
+                    <button class="btn" type="submit">Mark as complete</button>
+                </form>
+                <p class="status">Status: {% if lesson.is_completed %}Completed{% else %}Not completed{% endif %}</p>
+            </article>
+
+            {% if feedback %}
+            <div class="feedback {{ feedback.kind }}">
+                {{ feedback.text }}
+            </div>
+            {% endif %}
 
             <div class="actions">
                 <a class="btn" href="{% url 'lessons' %}">Back to lesson map</a>

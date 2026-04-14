@@ -75,6 +75,12 @@ LESSONS = [
             "task": "Print your name and favorite subject in two lines.",
             "starter": "print('Your name')\nprint('Favorite subject')",
         },
+        "quiz": {
+            "question": "Which function prints text to the screen in Python?",
+            "options": ["echo()", "print()", "show()", "write()"],
+            "answer": 1,
+            "explanation": "Python uses print() to display output.",
+        },
     },
     {
         "slug": "variables-and-data-types",
@@ -104,6 +110,12 @@ LESSONS = [
             "task": "Create variables for your name, age, and whether you are a student.",
             "starter": "name = 'Ava'\nage = 20\nis_student = True",
         },
+        "quiz": {
+            "question": "Which is a boolean value in Python?",
+            "options": ["'True'", "1", "True", "yes"],
+            "answer": 2,
+            "explanation": "True (without quotes) is a boolean literal.",
+        },
     },
     {
         "slug": "control-flow",
@@ -126,6 +138,12 @@ LESSONS = [
         "exercise": {
             "task": "Write a program that prints 'Pass' if marks >= 40, otherwise 'Fail'.",
             "starter": "marks = 56\nif marks >= 40:\n    print('Pass')\nelse:\n    print('Fail')",
+        },
+        "quiz": {
+            "question": "Which keyword handles all remaining conditions?",
+            "options": ["if", "then", "else", "elif"],
+            "answer": 2,
+            "explanation": "else runs when previous if/elif conditions are false.",
         },
     },
     {
@@ -150,6 +168,12 @@ LESSONS = [
             "task": "Create a function add(a, b) that returns the sum.",
             "starter": "def add(a, b):\n    return a + b",
         },
+        "quiz": {
+            "question": "Which keyword sends a value back from a function?",
+            "options": ["yield", "return", "break", "pass"],
+            "answer": 1,
+            "explanation": "return sends the function result to the caller.",
+        },
     },
     {
         "slug": "strings",
@@ -171,6 +195,12 @@ LESSONS = [
         "exercise": {
             "task": "Take a name and print it in uppercase.",
             "starter": "name = 'code pulse'\nprint(name.upper())",
+        },
+        "quiz": {
+            "question": "What does 'python'.upper() return?",
+            "options": ["python", "PYTHON", "Python", "error"],
+            "answer": 1,
+            "explanation": "upper() converts all characters to uppercase.",
         },
     },
     {
@@ -194,18 +224,64 @@ LESSONS = [
             "task": "Create a list of 3 subjects and append one more.",
             "starter": "subjects = ['Math', 'Physics', 'Chemistry']\nsubjects.append('Python')",
         },
+        "quiz": {
+            "question": "Which method adds a value to the end of a list?",
+            "options": ["add()", "append()", "push()", "insert_end()"],
+            "answer": 1,
+            "explanation": "append() adds one item to the end of a list.",
+        },
     },
 ]
 
 
-def _lesson_with_progress(lesson):
+def _get_progress_state(request):
+    completed_slugs = set(request.session.get("completed_lessons", []))
+    quiz_results = request.session.get("lesson_quiz_results", {})
+    return completed_slugs, quiz_results
+
+
+def _save_progress_state(request, completed_slugs, quiz_results):
+    request.session["completed_lessons"] = sorted(completed_slugs)
+    request.session["lesson_quiz_results"] = quiz_results
+    request.session.modified = True
+
+
+def _lesson_with_progress(lesson, completed_slugs=None, quiz_results=None):
     lesson_data = dict(lesson)
+    completed_slugs = completed_slugs or set()
+    quiz_results = quiz_results or {}
+
+    if lesson_data["slug"] in completed_slugs:
+        lesson_data["done"] = lesson_data["total"]
+
     lesson_data["progress"] = int((lesson_data["done"] / lesson_data["total"]) * 100)
+    lesson_data["is_completed"] = lesson_data["slug"] in completed_slugs
+
+    quiz_result = quiz_results.get(lesson_data["slug"], {})
+    lesson_data["quiz_done"] = bool(quiz_result)
+    lesson_data["quiz_correct"] = bool(quiz_result.get("is_correct"))
+    lesson_data["quiz_score"] = 100 if lesson_data["quiz_correct"] else 0
     return lesson_data
 
 
+def _course_metrics(lessons):
+    if not lessons:
+        return {"overall_progress": 0, "completed_count": 0, "lessons_today": 0}
+
+    completed_count = sum(1 for lesson in lessons if lesson["is_completed"])
+    overall_progress = int(sum(lesson["progress"] for lesson in lessons) / len(lessons))
+    lessons_today = min(completed_count, 3)
+    return {
+        "overall_progress": overall_progress,
+        "completed_count": completed_count,
+        "lessons_today": lessons_today,
+    }
+
+
 def home(request):
-    lessons = [_lesson_with_progress(lesson) for lesson in LESSONS]
+    completed_slugs, quiz_results = _get_progress_state(request)
+    lessons = [_lesson_with_progress(lesson, completed_slugs, quiz_results) for lesson in LESSONS]
+    metrics = _course_metrics(lessons)
 
     quick_access = [
         {"name": "AI Tutor", "icon": "spark"},
@@ -223,6 +299,7 @@ def home(request):
             "app_name": "Code Pulse",
             "lessons": lessons,
             "quick_access": quick_access,
+            "metrics": metrics,
         },
     )
 
@@ -245,7 +322,8 @@ def feature_page(request, page_key):
 
 
 def lessons(request):
-    lesson_items = [_lesson_with_progress(lesson) for lesson in LESSONS]
+    completed_slugs, quiz_results = _get_progress_state(request)
+    lesson_items = [_lesson_with_progress(lesson, completed_slugs, quiz_results) for lesson in LESSONS]
     return render(
         request,
         "learn/lessons.html",
@@ -263,11 +341,35 @@ def lesson_detail(request, slug):
     if lesson is None:
         raise Http404("Lesson not found")
 
+    completed_slugs, quiz_results = _get_progress_state(request)
+    feedback = None
+
+    if request.method == "POST":
+        action = request.POST.get("action")
+        if action == "complete":
+            completed_slugs.add(slug)
+            _save_progress_state(request, completed_slugs, quiz_results)
+            feedback = {"kind": "success", "text": "Lesson marked as complete."}
+        elif action == "quiz":
+            selected = request.POST.get("choice")
+            if selected is None:
+                feedback = {"kind": "error", "text": "Select an answer before submitting the quiz."}
+            else:
+                is_correct = int(selected) == lesson["quiz"]["answer"]
+                quiz_results[slug] = {"is_correct": is_correct}
+                _save_progress_state(request, completed_slugs, quiz_results)
+                feedback = {
+                    "kind": "success" if is_correct else "error",
+                    "text": "Correct." if is_correct else "Not quite. Try again.",
+                    "explanation": lesson["quiz"]["explanation"],
+                }
+
     return render(
         request,
         "learn/lesson_detail.html",
         {
             "app_name": "Code Pulse",
-            "lesson": _lesson_with_progress(lesson),
+            "lesson": _lesson_with_progress(lesson, completed_slugs, quiz_results),
+            "feedback": feedback,
         },
     )

@@ -145,6 +145,12 @@
             background: linear-gradient(120deg, var(--accent), var(--accent-2));
         }
 
+        .state {
+            margin-top: 10px;
+            color: var(--muted);
+            font-size: 0.9rem;
+        }
+
         @media (max-width: 860px) {
             .grid {
                 grid-template-columns: 1fr;
@@ -191,9 +197,13 @@
             {% for lesson in lessons %}
             <article class="lesson-card">
                 <h3>{{ lesson.title }}</h3>
-                <p class="meta">{{ lesson.summary }} • {{ lesson.duration }}</p>
+                <p class="meta">{{ lesson.summary }} - {{ lesson.duration }}</p>
                 <div class="bar"><i style="width: {{ lesson.progress }}%;"></i></div>
                 <a class="open" href="{% url 'lesson_detail' lesson.slug %}">Open lesson</a>
+                <p class="state">
+                    {% if lesson.is_completed %}Completed{% else %}In progress{% endif %}
+                    {% if lesson.quiz_done %} - Quiz: {% if lesson.quiz_correct %}Passed{% else %}Try again{% endif %}{% endif %}
+                </p>
             </article>
             {% endfor %}
         </main>

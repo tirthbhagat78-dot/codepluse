@@ -424,15 +424,15 @@
 
                 <div class="stat-cards">
                     <div class="stat">
-                        <b>0 days</b>
-                        <p>Streak so far</p>
+                        <b>{{ metrics.completed_count }} done</b>
+                        <p>Lessons completed</p>
                     </div>
                     <div class="stat">
-                        <b>0 / 3</b>
+                        <b>{{ metrics.lessons_today }} / 3</b>
                         <p>Lessons today</p>
                     </div>
                     <div class="stat">
-                        <b>0%</b>
+                        <b>{{ metrics.overall_progress }}%</b>
                         <p>Course progress</p>
                     </div>
                 </div>
@@ -454,7 +454,7 @@
                             <div class="bar"><i style="width: {{ lesson.progress }}%;"></i></div>
                         </div>
                         <div>
-                            <div class="badge">{{ lesson.progress }}%</div>
+                            <div class="badge">{% if lesson.is_completed %}Done{% else %}{{ lesson.progress }}%{% endif %}</div>
                             <a class="go" href="{% url 'lesson_detail' lesson.slug %}">&gt;</a>
                         </div>
                     </article>
