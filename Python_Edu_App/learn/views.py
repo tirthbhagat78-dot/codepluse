@@ -26,7 +26,7 @@ def home(request):
         request,
         "learn/home.html",
         {
-            "app_name": "Code Pluse",
+            "app_name": "Code Pulse",
             "lessons": lessons,
             "quick_access": quick_access,
         },

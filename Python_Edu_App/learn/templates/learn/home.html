@@ -32,6 +32,7 @@
                 radial-gradient(circle at 85% 10%, #dff3f0 0%, transparent 45%),
                 linear-gradient(180deg, #fef6eb 0%, var(--bg) 55%);
             color: var(--text);
+            min-height: 100vh;
         }
 
         .site {
@@ -94,7 +95,7 @@
         }
 
         .hero h1 {
-            font-size: 2.1rem;
+            font-size: clamp(1.6rem, 3.2vw, 2.1rem);
             margin: 8px 0 10px;
             line-height: 1.2;
             font-family: "Fraunces", serif;
@@ -285,6 +286,8 @@
             border-radius: 12px;
             font-size: 1.3rem;
             cursor: pointer;
+            display: grid;
+            place-items: center;
         }
 
         .tone-teal .lesson-icon { color: #0f6b6b; border-color: #cfe5e3; }
@@ -341,6 +344,45 @@
 
             .quick-grid {
                 grid-template-columns: 1fr;
+            }
+
+            .lesson-card {
+                grid-template-columns: 50px 1fr 50px;
+                gap: 8px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .site {
+                padding: 10px;
+            }
+
+            .hero {
+                padding: 20px;
+            }
+
+            .hero p {
+                font-size: 0.95rem;
+            }
+
+            .nav a {
+                padding: 10px 12px;
+                white-space: nowrap;
+            }
+
+            .panel {
+                padding: 12px;
+            }
+
+            .lesson-card {
+                padding: 12px;
+                grid-template-columns: 46px 1fr 46px;
+            }
+
+            .lesson-icon,
+            .go {
+                width: 40px;
+                height: 40px;
             }
         }
     </style>

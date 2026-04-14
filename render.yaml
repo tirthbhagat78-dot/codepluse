@@ -1,9 +1,17 @@
 services:
   - type: web
-    name: python-edu-app
+    name: codepluse
     env: python
     plan: free
     branch: main
     root: Python_Edu_App
+    healthCheckPath: /
     buildCommand: pip install -r requirements.txt && python manage.py collectstatic --noinput
     startCommand: gunicorn codepulse.wsgi --bind 0.0.0.0:$PORT
+    envVars:
+      - key: DJANGO_DEBUG
+        value: "False"
+      - key: DJANGO_SECRET_KEY
+        generateValue: true
+      - key: DJANGO_ALLOWED_HOSTS
+        value: localhost,127.0.0.1
